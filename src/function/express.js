@@ -21,5 +21,5 @@ async function response(res) {
 	res.send(`<title>${process.env.REPL_SLUG}</title>
 <style>body{color: #fff;background-color: #121212;font-size: 50px;}</style>
 ${process.env.REPL_SLUG}はオンライン！<br>
-${port}`);
+port：${port}`);
 }
