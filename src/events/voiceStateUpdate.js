@@ -9,7 +9,7 @@ const { Logger } = await import(src + 'function/logger.js');
 const { dictImport } = await import(src + 'function/dictImport.js');
 const { hanZen, tts, tts2 } = await import(src + 'cmd/VoiceVox/synthesis.js');
 const { convCom, writeFile, idDel } = await import(src + 'events/msgCreate.js');
-
+const env = yaml.load(process.env.Discord);
 
 export const name = Events.VoiceStateUpdate;
 export async function execute(oldState, newState, client) {
@@ -25,6 +25,7 @@ export async function execute(oldState, newState, client) {
 		oldState.requestToSpeakTimestamp === null && newState.requestToSpeakTimestamp === null)) return;
 	const interaction = newState.channelId !== null ? newState : oldState;
 	const channelId = interaction.channel.id;
+	if (env.Stage !== channelId) return;
 	await voiceState(oldState, newState, client, channelId, user);
 	if (interaction.member.user.bot) return;
 	client.var.dict = client.var.dict ?? await dictImport(null);
