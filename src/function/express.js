@@ -3,7 +3,7 @@ const { Logger } = await import(src + 'function/logger.js');
 import Express from 'express';
 const app = new Express();
 import favicon from 'serve-favicon';
-app.use(favicon(data + 'favicon.ico'));
+app.use(favicon(data + 'favicon.png'));
 const port = 3000;
 
 export async function expressRun(client) {
@@ -18,8 +18,8 @@ export async function expressRun(client) {
 
 
 async function response(res) {
-	res.send(`<title>Translator1</title>
+	res.send(`<title>${process.env.REPL_SLUG}</title>
 <style>body{color: #fff;background-color: #121212;font-size: 50px;}</style>
-Translator1はオンライン！<br>
+${process.env.REPL_SLUG}はオンライン！<br>
 ${port}`);
 }

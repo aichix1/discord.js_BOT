@@ -15,7 +15,7 @@ import { Client, Collection, GatewayIntentBits } from 'discord.js';
 const { Guilds, GuildMessages, GuildMembers, MessageContent, GuildVoiceStates,
 	GuildMessageReactions, GuildPresences } = GatewayIntentBits;
 const intents = [Guilds, GuildMessages, GuildMembers, MessageContent, GuildVoiceStates,
-	GuildMessageReactions,  GuildPresences];
+	GuildMessageReactions, GuildPresences];
 const client = new Client({ intents: intents });
 const { Logger } = await import(src + 'function/logger.js');
 const { dictImport } = await import(src + 'function/dictImport.js');
@@ -41,7 +41,8 @@ client.var2 = {
 	lock: [false, new Object],
 	connect: new Object, player: new Object,
 	ids: [new Collection, new Object],
-	userPre: new Object, speaker: new Object, audience: new Object };
+	userPre: new Object, speaker: new Object, audience: new Object
+};
 
 client.cools = new Collection();
 client.cmds = new Collection();
@@ -62,7 +63,7 @@ for (const folder of cmdFolders) {
 client.login(token);
 await express(client);
 
-cron.schedule('0 3,13,23,33,43,53 * * * *', async () => {
+cron.schedule('0 */10 * * * *', async () => {
 	const log = new Logger('cron_topic');
 	moment.tz.setDefault('Asia/Tokyo');
 	const dict = await dictImport(data + 'list/dict.yaml');
@@ -75,9 +76,9 @@ cron.schedule('0 3,13,23,33,43,53 * * * *', async () => {
 cron.schedule('*/30 * * * * *', async () => {
 	const log = new Logger('cron_express');
 	const us = ['https://', '.repl.co/'];
-	const { subs } = process.env;
-	for (const [i, s] of subs.entries())
+	try {
+		const s = process.env.REPL_SLUG + '.' + process.env.REPL_OWNER;
 		client.rpc.request({ baseURL: us[0] + s, url: us[1] })
-			//.catch(() => null)
-			.catch(async e => { if (i === 1) await express(client) });
+			.catch(async () => { await express(client) });
+	} catch (e) { log.err(e) }
 });

@@ -9,7 +9,7 @@ import { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, Embe
 const { Logger } = await import(src + 'function/logger.js');
 const { dictImport } = await import(src + 'function/dictImport.js');
 const { rng } = await import(src + 'cmd/utility/rng.js');
-const la = (await import (src + 'list/language.js')).default;
+const la = (await import (process.env.data + 'list/language.js')).default;
 const met = (await import(src + 'list/met.js')).interaction;
 const path1 = process.env.data + 'trans/data1.yaml';
 const path2 = process.env.data + 'trans/data2.yaml';

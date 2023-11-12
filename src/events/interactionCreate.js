@@ -1,6 +1,7 @@
 import { setTimeout } from 'timers/promises';
 import { Events, Collection } from 'discord.js';
-const { Logger } = await import(process.env.src + 'function/logger.js');
+const { src } = process.env;
+const { Logger } = await import(src + 'function/logger.js');
 const met = (await import(src + 'list/met.js')).interaction;
 
 export const name = Events.InteractionCreate;
@@ -43,7 +44,7 @@ async function cooldown(interaction, cmd, now, expiration) {
 	try {
 		await interaction.reply({ content: content, ephemeral: true });
 		await setTimeout(expiration - now);
-		await interaction[met.l].catch(e => log.err(e));
+		await interaction[met.lr].catch(e => log.err(e));
 	} catch (e) { log.err(e?.rawError?.message, '\n', e?.requestBody) }
 }
 

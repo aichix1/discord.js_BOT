@@ -1,4 +1,4 @@
-const { src, data } = process.env;
+const { src } = process.env;
 import fs from 'fs';
 import yaml from 'js-yaml';
 import { setTimeout } from 'timers/promises';
@@ -16,7 +16,7 @@ const join = (await import(src + 'cmd/utility/join.js')).execute;
 const met = (await import(src + 'list/met.js')).interaction;
 
 const default_voice = 12;
-const dict2 = await dictImport(data + 'list/presets.yaml');
+const dict2 = await dictImport(process.env.data + 'list/presets.yaml');
 
 export const data = new SlashCommandBuilder()
 	.setName('synthesis')
@@ -52,7 +52,7 @@ export async function execute(interaction, client) {
 	const log = new Logger(this.name);
 	await interaction[met.f]({ ephemeral: true }).catch(e => log.err(e));
 	const { convCom } = await import (src + 'events/msgCreate.js');
-	const { ids } = client.voiceVox;
+	const { ids } = client.var2;
 	const { id } = interaction;
 	ids[0].set(id, 0);
 	const channelId = interaction.channelId;
@@ -64,7 +64,7 @@ export async function execute(interaction, client) {
 	for (const li of interaction.options._hoistedOptions) list[li.name] = li.value;
 	const d = await convCom(client, ' ', list.msg, true, false);
 	await tts(interaction, client, channelId, id, null, d.a);
-	if (list.delete || list.delete === undefined) await interaction[met.l]().catch(e => null);
+	if (list.delete || list.delete === undefined) await interaction[met.lr]().catch(e => null);
 }
 
 export async function hanZen(str) {
@@ -79,7 +79,7 @@ export async function hanZen(str) {
 
 export async function tts(interaction, client, channelId, id, user, msg) {
 	const log = new Logger('tts');
-	const { ids, lock } = client.voiceVox;
+	const { ids, lock } = client.var2;
 	const { set } = client.var.dict;
 	const voice = set?.[user]?.voice ?? default_voice;
 	const preset = set?.[user]?.preset ?? default_voice;
@@ -108,7 +108,7 @@ export async function tts(interaction, client, channelId, id, user, msg) {
 
 export async function tts2(interaction, client, channelId, id, user, msg, msg3) {
 	const log = new Logger('tts2');
-	const { ids } = client.voiceVox;
+	const { ids } = client.var2;
 	ids[0].delete(id);
 	try {
 		const type = await rng(0, 5) !== 0 ? 0 : 1;
@@ -118,7 +118,7 @@ export async function tts2(interaction, client, channelId, id, user, msg, msg3) 
 	
 		const proxys = ['https://hidester.com/proxy/', 'http://168.63.76.32:3128'];
 		const agent = new HttpsProxyAgent(await rng(proxys));
-		const ls = await dictImport(data + 'list/edge.yaml');
+		const ls = await dictImport(process.env.data + 'list/edge.yaml');
 		const res = await translate(msg3, { to: 'en', requestOprions: { agent: agent } });
 		const l = await rng(ls[res.from.language?.iso] ?? ls.en);
 		const isJA = res.from.language?.iso === 'ja';
@@ -140,7 +140,7 @@ export async function tts2(interaction, client, channelId, id, user, msg, msg3) 
 
 export async function play(interaction, client, channelId, id, msg, path, volume, time, l) {
 	const log = new Logger('play');
-	const { ids, lock, player, connect } = client.voiceVox;
+	const { ids, lock, player, connect } = client.var2;
 	if (!player[channelId])
 		player[channelId] = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Pause } });
 	let resource;
@@ -174,7 +174,7 @@ export async function play(interaction, client, channelId, id, msg, path, volume
 
 async function getConnection(interaction, client, guildId, channelId) {
 	const log = new Logger('getConnec');
-	const { connect } = client.voiceVox;
+	const { connect } = client.var2;
 	try {
 		connect[channelId] = getVoiceConnection(guildId, channelId);
 		if (connect[channelId]?._state.status !== 'ready')

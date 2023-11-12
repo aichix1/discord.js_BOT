@@ -29,7 +29,7 @@ export async function execute(interaction, client) {
 	const log = new Logger(this.name);
 	try {
 		await interaction[met.f]({ ephemeral: true });
-		await interaction[met.l]()
+		await interaction[met.lr]()
 	} catch (e) { log.err(e); }
 	const max = interaction.options.getInteger('max');
 	const quantity = interaction.options.getInteger('quantity') ?? 1;

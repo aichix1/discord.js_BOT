@@ -8,14 +8,14 @@ import { Collection, Events } from 'discord.js';
 const { Logger } = await import(src + 'function/logger.js');
 const { dictImport } = await import(src + 'function/dictImport.js');
 const { hanZen, tts, tts2 } = await import(src + 'cmd/VoiceVox/synthesis.js');
-const { convCom, writeFile, isOn, idDel } = await import(src + 'events/msgCreate.js');
+const { convCom, writeFile, idDel } = await import(src + 'events/msgCreate.js');
 
 
 export const name = Events.VoiceStateUpdate;
 export async function execute(oldState, newState, client) {
 	const log = new Logger(this.name);
 	await setTimeout(1000);
-	const { ids } = client.voiceVox;
+	const { ids } = client.var2;
 	const user = newState.member.user.username;
 	const li = ['serverDeaf', 'serverMute', 'selfDeaf', 'selfMute', 'selfVideo', 'streaming'];
 	const bool = li.map(v => { return oldState[v] === newState[v]; });
@@ -34,16 +34,12 @@ export async function execute(oldState, newState, client) {
 	if (ids[1][channelId] === undefined) ids[1][channelId] = new Collection;
 	const id = interaction.id + moment().format('hhmmssSS');
 	await writeFile(user, msg, true);
-	const flag2 = await isOn(interaction, client, channelId);
 	const d = await convCom(client, user, msg, false, true);
-	
-	if (flag2 && !/aichix[1-2]/gu.test(user)) {
-		ids[0].set(id, 0);
-		ids[1][channelId].set(id, 0);
-		if (!/aichix3/.test(user)) interaction.channel.send(d.a).catch(e => log.err(e));
-		//await tts(interaction, client, channelId, id, user, msg);
-		await tts2(interaction, client, channelId, id, user, d.a, d.c);
-	}
+	ids[0].set(id, 0);
+	ids[1][channelId].set(id, 0);
+	if (!/aichix3/.test(user)) interaction.channel.send(d.a).catch(e => log.err(e));
+	//await tts(interaction, client, channelId, id, user, msg);
+	await tts2(interaction, client, channelId, id, user, d.a, d.c);
 }
 
 
@@ -58,7 +54,7 @@ async function io(o, n) {
 async function voiceState(o, n, client, channelId, user) {
 	const log = new Logger('voiceState');
 	try {
-		const { speaker, audience } = client.voiceVox;
+		const { speaker, audience } = client.var2;
 		if (!speaker[channelId]) speaker[channelId] = new Collection;
 		if (!audience[channelId]) audience[channelId] = new Collection;
 		if (o.channelId === null && n.channelId !== null) await voiceState2(client, channelId, o.id, user, 0, 1);
@@ -73,7 +69,7 @@ async function voiceState(o, n, client, channelId, user) {
 async function voiceState2(client, channelId, id, user, f1, f2) {
 	const log = new Logger('voiceState2');
 	try {
-		const { speaker, audience } = client.voiceVox;
+		const { speaker, audience } = client.var2;
 		speaker[channelId][f1 ? 'set' : 'delete'](user, id);
 		audience[channelId][f2 ? 'set' : 'delete'](user, id);
 	} catch (e) { log.err(e) }

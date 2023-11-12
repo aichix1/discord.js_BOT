@@ -17,7 +17,7 @@ const env = yaml.load(process.env.Discord);
 export const name = Events.MessageCreate;
 export async function execute(interaction, client) {
 	const log = new Logger('msgCreate');
-	const { ids, lock, userPre, speaker } = client.voiceVox;
+	const { ids, lock, userPre, speaker } = client.var2;
 	const channelId = interaction.channelId;
 	const channelType = interaction.channel.type;
 	const user = interaction.member?.user?.username;
@@ -38,7 +38,7 @@ export async function execute(interaction, client) {
 			.catch(e => log.err(e?.rawError?.message ?? e?.rawError ?? e)))();
 	
 	if (/^!calc/.test(content)) return calc(interaction, client, content.replace(/^!calc ?/, ''));
-	if (env.Stage.reduce((pre, stageId) => { return pre && stageId !== channelId; }, true)) return;
+	if (env.Stage !== channelId) return;
 	const atch = interaction.attachments;
 	const f1 = (key => { return [atch.get(key).url, atch.get(key).proxyURL]; });
 	const [url, proxyURL] = atch.size ? f1([...atch.keys()][0]) : [null, null];
@@ -63,6 +63,7 @@ export async function writeFile(user, msg, path) {
 
 export async function convCom(client, user, txt, flag, flag2) {
 	const log = new Logger('convCom');
+	//log.info(client);
 	client.var.name = client.var.name ?? await dictImport(data + 'list/name.yaml');
 	if (client.var.name == null) return;
 	const { dict, name } = client.var;
@@ -94,7 +95,7 @@ async function convMsg(client, txt) {
 export async function idDel(client, channelId, id) {
 	const log = new Logger('idDel');
 	try {
-		const { ids } = client.voiceVox;
+		const { ids } = client.var2;
 		ids[0].delete(id);
 		ids[1][channelId].delete(id);
 	} catch (e) { log.err(e); }
@@ -102,11 +103,12 @@ export async function idDel(client, channelId, id) {
 
 async function stageMember(interaction, client, channelId) {
 	const log = new Logger('stageMember');
-	const { speaker, audience } = client.voiceVox;
+	const { speaker, audience } = client.var2;
 	if (!speaker[channelId]) speaker[channelId] = new Collection;
 	if (!audience[channelId]) audience[channelId] = new Collection;
 	try {
-		const members = await interaction.member.voice.channel.members;
+		const members = await interaction.member.voice.channel?.members;
+		if (members == null) return;
 		for (const member of members.keys()) {
 			const VoiceState = (await interaction.guild.members.fetch(member)).voice;
 			if (!VoiceState.suppress) speaker[channelId].set(members.get(member).user.username, member);

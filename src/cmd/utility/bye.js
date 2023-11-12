@@ -1,6 +1,7 @@
+const { src } = process.env;
 import { SlashCommandBuilder} from 'discord.js';
 import { getVoiceConnection } from '@discordjs/voice';
-const { Logger } = await import(process.env.src + 'function/logger.js');
+const { Logger } = await import(src + 'function/logger.js');
 const met = (await import(src + 'list/met.js')).interaction;
 
 export const data = new SlashCommandBuilder()
@@ -14,7 +15,7 @@ export async function execute(interaction, client, channelId) {
 	if (interaction.type === 2)
 		await interaction[met.f]({ ephemeral: true }).catch(e => log.err(e));
 	
-	const { connect } = client.voiceVox;
+	const { connect } = client.var2;
 	const { guild } = interaction;
 	channelId = channelId ?? interaction.channelId;
 	connect[channelId] = getVoiceConnection(guild.id, channelId);

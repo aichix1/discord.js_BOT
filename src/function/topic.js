@@ -11,7 +11,7 @@ export async function tpc(client, tpcs) {
 	let tpcs2;
 	for (const user of Object.keys(tpcs))
 		for (const type of types)
-			if (!!client.voiceVox[type]?.[env.Stage?.get(user)) tpcs2 = tpcs[user];
+			if (!!client.var[type]?.[env.Stage?.get(user)) tpcs2 = tpcs[user];
 	if (tpcs2 === undefined) tpcs2 = tpcs.null;
 	const tpc = await rng(tpcs2);
 	const guild = await client.guilds.fetch(env.Guild);

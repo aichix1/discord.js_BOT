@@ -47,7 +47,7 @@ async function calc(interaction, client) {
 	else if (interaction.customId[0] === 'e') result = result.substring(0, result.length - 1);
 	else if (interaction.customId[0] === 'c') result = '';
 	else result += interaction.customId[0];
-	const rep = { content: '```' + result + ' ```', components });
+	const rep = { content: '```' + result + ' ```', components };
 	try { await interaction[met.e](rep) } catch { await interaction.reply(rep) };
 }
 

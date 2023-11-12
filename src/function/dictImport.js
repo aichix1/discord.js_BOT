@@ -1,6 +1,6 @@
+const { src, data } = process.env;
 import fs from 'fs';
 import yaml from 'js-yaml';
-const { src, data } = process.env;
 const { Logger } = await import(src + 'function/logger.js');
 
 export const name = 'dictImport';

@@ -1,3 +1,4 @@
+const { src } = process.env;
 import yaml from 'js-yaml';
 import { SlashCommandBuilder } from 'discord.js';
 import { joinVoiceChannel } from '@discordjs/voice';
@@ -17,7 +18,7 @@ export async function execute(interaction, client, channelId, flag) {
 	if (interaction.type === 2 && !flag)
 		await interaction[met.f]({ ephemeral: true }).catch(e => log.err(e));
 
-	let { connect } = client.voiceVox;
+	let { connect } = client.var2;
 	const guildId = interaction.guild?.id ?? env.Guild;
 	const guild = await client.guilds.fetch(guildId);
 	channelId = channelId ?? interaction.channelId ?? env.Stage;
@@ -37,5 +38,5 @@ export async function execute(interaction, client, channelId, flag) {
 		try { await guild.members.me.voice.setSuppressed(false); break; }
 		catch (e) { if (n < 2) await setTimeout(500); else log.err(e) }
 	
-	if (interaction.type === 2 && !flag) await interaction[met.l]().catch(e => log.err(e));
+	if (interaction.type === 2 && !flag) await interaction[met.lr]().catch(e => log.err(e));
 }
