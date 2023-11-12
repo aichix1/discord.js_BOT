@@ -6,6 +6,8 @@
 	"type": "module",
 	"scripts": {
 		"init": "bash shell/init.sh",
+		"init2": "bash shell/init2.sh",
+		"init3": "bash shell/init3.sh",
 		"git": "bash shell/git.sh",
 		"deploy": "node src/deploy.js"
 	},
