@@ -9,9 +9,16 @@ export async function tpc(client, tpcs) {
 	const log = new Logger('tpc');
 	const types = ['speaker', 'audience'];
 	let tpcs2;
-	for (const user of Object.keys(tpcs))
-		for (const type of types)
-			if (!!client.var[type]?.[env.Stage?.get(user)) tpcs2 = tpcs[user];
+	//for (const user of Object.keys(tpcs))
+	//	for (const type of types)
+	//		if (!!client.var[type]?.[env.Stage?.get(user)) tpcs2 = tpcs[user];
+	for (const user of Object.keys(tpcs)) {
+		for (const type of types) {
+			if (!!client.var[type]?.[env.Stage]?.get(user)) {
+				tpcs2 = tpcs[user];
+			}
+		}
+	}
 	if (tpcs2 === undefined) tpcs2 = tpcs.null;
 	const tpc = await rng(tpcs2);
 	const guild = await client.guilds.fetch(env.Guild);
